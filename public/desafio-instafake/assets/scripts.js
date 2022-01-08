@@ -8,8 +8,7 @@ async function init() {
   }
 }
 
-$("#logout").on("submit", function (ev) {
-  ev.preventDefault();
+$("#logout").on("click", function (ev) {
   logout();
 });
 
@@ -39,7 +38,7 @@ function logout() {
   localStorage.removeItem("token");
   $("#navbar").removeClass("d-block").addClass("d-none");
   $("#div-form").removeClass("d-none").addClass("d-block");
-  $("#lista-post").addClass("d-none");
+  $("#contenido").addClass("d-none");
 }
 
 //ir a buscar el token
@@ -84,6 +83,6 @@ function llenarCard(posts) {
 
 function ocultarLogin() {
   $("#div-form").removeClass("d-block").addClass("d-none");
-  $("#lista-post").removeClass("d-none");
+  $("#contenido").removeClass("d-none");
   $("#navbar").removeClass("d-none").addClass("d-block");
 }
