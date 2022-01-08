@@ -2,9 +2,17 @@ init();
 async function init() {
   const token = localStorage.getItem("token");
   if (token) {
-    getPosts(token);
+    const posts = await getPosts(token, 1);
+    llenarCard(posts);
+    ocultarLogin();
   }
 }
+
+$("#logout").on("submit", function (ev) {
+  ev.preventDefault();
+  logout();
+});
+
 $("#form-login").on("submit", async function (ev) {
   ev.preventDefault();
 
@@ -12,13 +20,31 @@ $("#form-login").on("submit", async function (ev) {
   const password = $("#password").val();
 
   const token = await getToken(email, password);
-  const posts = await getPosts(token);
+  const posts = await getPosts(token, 1);
   llenarCard(posts);
+  ocultarLogin();
 });
+
+let pagActual = 1;
+
+$("#morePages").on("click", async function (ev) {
+  ev.preventDefault();
+  const token = localStorage.getItem("token");
+  pagActual += 1;
+  let newPosts = await getPosts(token, pagActual);
+  llenarCard(newPosts);
+});
+
+function logout() {
+  localStorage.removeItem("token");
+  $("#navbar").removeClass("d-block").addClass("d-none");
+  $("#div-form").removeClass("d-none").addClass("d-block");
+  $("#lista-post").addClass("d-none");
+}
 
 //ir a buscar el token
 async function getToken(email, password) {
-  let jwt = await fetch("http://localhost:3100/api/login", {
+  let jwt = await fetch("/api/login", {
     method: "POST",
     body: JSON.stringify({ email, password }),
   });
@@ -29,8 +55,8 @@ async function getToken(email, password) {
 }
 
 //buscar posteos
-async function getPosts(token) {
-  let data = await fetch("http://localhost:3100/api/photos", {
+async function getPosts(token, page) {
+  let data = await fetch(`/api/photos?page=${page}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -54,7 +80,10 @@ function llenarCard(posts) {
     </div>
     `);
   }
+}
 
+function ocultarLogin() {
   $("#div-form").removeClass("d-block").addClass("d-none");
   $("#lista-post").removeClass("d-none");
+  $("#navbar").removeClass("d-none").addClass("d-block");
 }

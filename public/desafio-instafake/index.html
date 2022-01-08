@@ -17,11 +17,25 @@
     </style>
   </head>
   <body class="">
+    <nav class="navbar fixed-top navbar-light bg-light d-none" id="navbar">
+      <div class="container-fluid">
+        <div></div>
+        <div class="d-flex justify-content-center">
+          <a class="navbar-brand" href="#">InstaFake</a>
+        </div>
+        <div class="navbar-nav justify-content-end">
+          <button
+            class="btn btn-outline-success me-2"
+            type="button"
+            id="logout"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    </nav>
     <div class="container">
       <div class="row justify-content-center align-items-center p-5">
-        <div class="col-md-12">
-          <h3 class="text-center">InstaFake</h3>
-        </div>
         <div class="col-md-6 d-block" id="div-form">
           <form id="form-login">
             <div class="form-group">
@@ -43,6 +57,12 @@
       </div>
     </div>
     <div id="lista-post" class="d-none row"></div>
+
+    <div class="justify-content-center d-flex py-4">
+      <button class="btn btn-outline-success me-2" type="button" id="morePages">
+        VER MÁS
+      </button>
+    </div>
     <script
       src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
       integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
