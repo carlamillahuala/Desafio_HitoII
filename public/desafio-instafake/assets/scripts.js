@@ -36,6 +36,8 @@ $("#morePages").on("click", async function (ev) {
 
 function logout() {
   localStorage.removeItem("token");
+  pagActual = 1;
+  $("#lista-post").empty();
   $("#navbar").removeClass("d-block").addClass("d-none");
   $("#div-form").removeClass("d-none").addClass("d-block");
   $("#contenido").addClass("d-none");
