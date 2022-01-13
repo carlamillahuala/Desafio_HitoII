@@ -22,7 +22,7 @@
             <a class="nav-link active" aria-current="page" href="#">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Iniciar sesión</a>
+            <a class="nav-link" href="#" id="logout">Cerrar Sesion</a>
           </li>
         </ul>
       </div>
@@ -64,15 +64,23 @@
                 <th scope="col">Activos</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-              </tr>
+            <tbody id="cuerpo-tabla">
+              
             </tbody>
           </table>
+      </div>
+      <div class="modal" id="modalPais" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header" id="tituloModal">
+              
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modalBody">
+              
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
