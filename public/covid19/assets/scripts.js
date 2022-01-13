@@ -9,7 +9,7 @@ async function init() {
   if (token) {
     ocultarLogin();
     let { masde10mil, paises } = await traerDatos(token);
-    chart("chartContainer", masde10mil);
+    chart("chartContainer", "Países con más fallecidos Covid19", masde10mil);
     crearTabla(paises);
   }
 }
@@ -66,12 +66,12 @@ function crearTabla(array) {
 //La creación del gráfico se pasó a esta función "Chart" que lo dibuja
 //Recibe por parámetro un selector(porque hay que decirle si hacemos el gráfico grande o el del modal)
 //y un array que que pueden ser los de la variable masde10mil o paisData
-function chart(selector, array) {
+function chart(selector, titulo, array) {
   console.log(array);
   var chart = new CanvasJS.Chart(selector, {
     animationEnabled: true,
     title: {
-      text: "Países con Covid19",
+      text: titulo,
     },
     axisY: {
       titleFontColor: "#424242",
@@ -182,7 +182,7 @@ $("#form-login").on("submit", async (ev) => {
     $("#email").val("");
     $("#password").val("");
     ocultarLogin();
-    chart("chartContainer", masde10mil);
+    chart("chartContainer", "Países con más fallecidos Covid19", masde10mil);
     crearTabla(paises);
   } catch (err) {
     $("#login-error").removeClass("d-none").html(err.message);
@@ -212,7 +212,7 @@ $(document).on("click", ".mostrarPais", async (ev) => {
   paisData = [paisData];
 
   $("#tituloModal").prepend(`<h5 class="modal-title">${pais}</h5>`);
-  chart("chartPais", paisData);
+  chart("chartPais", `Casos Covid19 en ${pais}`, paisData);
 });
 
 //Esta función oculta el formulario de login y permite ser visibles al gráfico y tabla
