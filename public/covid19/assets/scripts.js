@@ -64,7 +64,8 @@ function crearTabla(array) {
 }
 
 //La creación del gráfico se pasó a esta función "Chart" que lo dibuja
-//Recibe por parámetro un array, que en este caso son los de la variable masde10mil
+//Recibe por parámetro un selector(porque hay que decirle si hacemos el gráfico grande o el del modal)
+//y un array que que pueden ser los de la variable masde10mil o paisData
 function chart(selector, array) {
   console.log(array);
   var chart = new CanvasJS.Chart(selector, {
@@ -188,6 +189,7 @@ $("#form-login").on("submit", async (ev) => {
   }
 });
 
+//Función para traer los datos específicos de un país, por eso hay que decirle qué país por parámetro
 async function traerDetallePais(pais) {
   const data = await fetch(`/api/countries/${pais}`);
   let paisData = await data.json();
@@ -196,6 +198,8 @@ async function traerDetallePais(pais) {
   return paisData;
 }
 
+//JQuery para cuando se hace click en "ver Más"
+//Buscamos el país al que le hizo clic y con ese dato, llama a dibujar gráfico y pone titulo al modal
 $(document).on("click", ".mostrarPais", async (ev) => {
   ev.preventDefault();
   $("#tituloModal").empty();
