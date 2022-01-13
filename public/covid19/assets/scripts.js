@@ -10,14 +10,19 @@ async function init() {
 }
 
 async function getToken(email, password) {
-  let jwt = await fetch("/api/login", {
-    method: "POST",
-    body: JSON.stringify({ email, password }),
-  });
-  jwt = await jwt.json();
-  token = jwt.token;
-  localStorage.setItem("token", token);
-  return token;
+  try {
+    let jwt = await fetch("/api/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    });
+    jwt = await jwt.json();
+    token = jwt.token;
+    console.log({ token });
+    localStorage.setItem("token", token);
+    return token;
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 //traer datos
@@ -145,32 +150,44 @@ function chart(array) {
 
 $("#form-login").on("submit", async (ev) => {
   ev.preventDefault();
+  $("#cuerpo-tabla").empty();
+  $("#chartContainer").empty();
   const email = $("#email").val();
   const password = $("#password").val();
 
   const token = await getToken(email, password);
   let { masde10mil, paises } = await traerDatos();
 
+  ocultarLogin();
   chart(masde10mil);
   crearTabla(paises);
-  ocultarLogin();
 });
 
 $(document).on("click", ".mostrarPais", (ev) => {
   ev.preventDefault();
-
-  $("#tituloModal").append(`<h5 class="modal-title">Argentina</h5>`);
-  $("#modalBody").append(`<p>Casos covid</p>`);
+  $("#tituloModal").empty();
+  $("#modalBody").empty();
+  let tr = $(ev.target).parent().parent();
+  let tds = $(tr).find("td");
+  const pais = tds[0].textContent;
+  $("#tituloModal").prepend(`<h5 class="modal-title">${pais}</h5>`);
+  $("#modalBody").append(`<div>
+    <p class="pb-2"><strong>Datos Covid19:</strong></p>
+    <p>Casos confirmados: ${tds[1].textContent}</p>
+    <p>Casos fallecidos: ${tds[2].textContent}</p>
+    <p>Casos recuperados: ${tds[3].textContent}</p>
+    <p>Casos activos: ${tds[4].textContent}</p>
+  </div>`);
 });
 
 function ocultarLogin() {
   $("#div-form").removeClass("d-block").addClass("d-none");
-  $(".container").removeClass("d-none").addClass("d-block");
+  $(".datos").removeClass("d-none").addClass("d-block");
 }
 
 function mostrarLogin() {
   $("#div-form").removeClass("d-none").addClass("d-block");
-  $(".container").removeClass("d-block").addClass("d-none");
+  $(".datos").removeClass("d-block").addClass("d-none");
 }
 
 function logout() {
