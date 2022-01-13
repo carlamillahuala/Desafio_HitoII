@@ -10,18 +10,17 @@ async function init() {
 }
 
 async function getToken(email, password) {
-  try {
-    let jwt = await fetch("/api/login", {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-    });
-    jwt = await jwt.json();
-    token = jwt.token;
-    console.log({ token });
+  const res = await fetch("/api/login", {
+    method: "POST",
+    body: JSON.stringify({ email, password }),
+  });
+  const json = await res.json();
+  if (res.status >= 400) {
+    throw new Error(json.message);
+  } else {
+    token = json.token;
     localStorage.setItem("token", token);
     return token;
-  } catch (err) {
-    console.log(err);
   }
 }
 
@@ -152,15 +151,23 @@ $("#form-login").on("submit", async (ev) => {
   ev.preventDefault();
   $("#cuerpo-tabla").empty();
   $("#chartContainer").empty();
-  const email = $("#email").val();
-  const password = $("#password").val();
 
-  const token = await getToken(email, password);
-  let { masde10mil, paises } = await traerDatos();
+  try {
+    const email = $("#email").val();
+    const password = $("#password").val();
 
-  ocultarLogin();
-  chart(masde10mil);
-  crearTabla(paises);
+    $("#login-error").addClass("d-none").empty();
+    const token = await getToken(email, password);
+    let { masde10mil, paises } = await traerDatos();
+
+    $("#email").val("");
+    $("#password").val("");
+    ocultarLogin();
+    chart(masde10mil);
+    crearTabla(paises);
+  } catch (err) {
+    $("#login-error").removeClass("d-none").html(err.message);
+  }
 });
 
 $(document).on("click", ".mostrarPais", (ev) => {
