@@ -219,12 +219,14 @@ $(document).on("click", ".mostrarPais", async (ev) => {
 function ocultarLogin() {
   $("#div-form").removeClass("d-block").addClass("d-none");
   $(".datos").removeClass("d-none").addClass("d-block");
+  $("#navbar").removeClass("d-none");
 }
 
 //Esta función oculta el gráfico y tabla y muestra el login (Es para cuando el usuario cierra sesión)
 function mostrarLogin() {
   $("#div-form").removeClass("d-none").addClass("d-block");
   $(".datos").removeClass("d-block").addClass("d-none");
+  $("#navbar").addClass("d-none");
 }
 
 //Función que elimina el token
