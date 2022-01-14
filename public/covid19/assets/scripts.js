@@ -57,7 +57,7 @@ function crearTabla(array) {
                 <td>${x.deaths}</td>
                 <td>${x.recovered}</td>
                 <td>${x.active}</td>
-                <td><button type="button" class="btn btn-link mostrarPais" data-bs-toggle="modal" data-bs-target="#modalPais">Ver Más</button></td>
+                <td><button type="button" class="btn btn-link mostrarPais" data-bs-toggle="modal" data-bs-target="#modalPais">Ver detalles</button></td>
             </tr>
             `);
   }
