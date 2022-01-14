@@ -15,13 +15,18 @@ $("#logout").on("click", function (ev) {
 $("#form-login").on("submit", async function (ev) {
   ev.preventDefault();
 
-  const email = $("#email").val();
-  const password = $("#password").val();
+  try {
+    const email = $("#email").val();
+    const password = $("#password").val();
 
-  const token = await getToken(email, password);
-  const posts = await getPosts(token, 1);
-  llenarCard(posts);
-  ocultarLogin();
+    $("#login-error").addClass("d-none").empty();
+    const token = await getToken(email, password);
+    const posts = await getPosts(token, 1);
+    llenarCard(posts);
+    ocultarLogin();
+  } catch (err) {
+    $("#login-error").removeClass("d-none").html(err.message);
+  }
 });
 
 let pagActual = 1;
@@ -45,14 +50,18 @@ function logout() {
 
 //ir a buscar el token
 async function getToken(email, password) {
-  let jwt = await fetch("/api/login", {
+  const res = await fetch("/api/login", {
     method: "POST",
     body: JSON.stringify({ email, password }),
   });
-  jwt = await jwt.json();
-  token = jwt.token;
-  localStorage.setItem("token", token);
-  return token;
+  const json = await res.json();
+  if (res.status >= 400) {
+    throw new Error(json.message);
+  } else {
+    token = json.token;
+    localStorage.setItem("token", token);
+    return token;
+  }
 }
 
 //buscar posteos
