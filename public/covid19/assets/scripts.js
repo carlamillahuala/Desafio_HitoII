@@ -11,6 +11,7 @@ async function init() {
     let { masde10mil, paises } = await traerDatos(token);
     chart("chartContainer", "Países con más fallecidos Covid19", masde10mil);
     crearTabla(paises);
+    datosChile(token)
   }
 }
 
@@ -239,3 +240,124 @@ function logout() {
 $("#logout").on("click", function (ev) {
   logout();
 });
+
+async function datosChile (token){
+  /*let data = await fetch(`/api/confirmed`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });*/
+  const opciones = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+  const url = ['/api/confirmed', '/api/deaths', '/api/recovered' ]
+  Promise.all(url.map(u => fetch(u, opciones)))
+  .then(response => Promise.all(response.map(resp => resp.json())))
+  .then(res => {
+    const datosChile = res.map(r => r.data)
+    graficoChile(datosChile)
+  })
+/*
+  const data1 = await fetch ('/api/confirmed')
+  const data2 = await fetch ('/api/deaths')
+  const data3 = await fetch ('/api/recovered')
+ 
+  const jsonConfirmed = await data.json()
+  const jsonDeaths = await data2.json()
+  const jsonRecovered = await data3.json()
+
+  console.log(jsonConfirmed)
+*/
+}
+
+
+
+function graficoChile (array) {
+  console.log(array)
+  var chart = new CanvasJS.Chart("chartContainer", {
+    animationEnabled: true,
+    theme: "light2",
+    title:{
+      text: "Situacion Chile"
+    },
+    axisX:{
+      valueFormatString: "DD MMM YYYY ",
+      crosshair: {
+        enabled: true,
+        snapToDataPoint: true
+      }
+    },
+    axisY: {
+      title: "Number of Visits",
+      includeZero: true,
+      crosshair: {
+        enabled: true
+      }
+    },
+    toolTip:{
+      shared:true
+    },  
+    legend:{
+      cursor:"pointer",
+      verticalAlign: "top",
+  
+  
+      itemclick: toogleDataSeries
+    },
+    data: [{
+      type: "line",
+      showInLegend: true,
+      name: "Confirmados",
+      markerType: "square",
+      xValueFormatString: "DD MMM, YYYY",
+      color: "#00000",
+      dataPoints: array[0].map(confirmados => {
+        x: new Date(confirmados.date), y: confirmados.total
+      })
+    },
+    {
+      type: "line",
+      showInLegend: true,
+      name: "Muertos",
+      lineDashType: "dash",
+      dataPoints: [
+        { x: new Date(2017, 0, 3), y: 510 },
+        { x: new Date(2017, 0, 4), y: 560 },
+        { x: new Date(2017, 0, 5), y: 540 },
+        { x: new Date(2017, 0, 6), y: 558 },
+        { x: new Date(2017, 0, 7), y: 544 },
+        { x: new Date(2017, 0, 8), y: 693 },
+        { x: new Date(2017, 0, 9), y: 657 },
+        { x: new Date(2017, 0, 10), y: 663 },
+        { x: new Date(2017, 0, 11), y: 639 },
+        { x: new Date(2017, 0, 12), y: 673 },
+        { x: new Date(2017, 0, 13), y: 660 },
+        { x: new Date(2017, 0, 14), y: 562 },
+        { x: new Date(2017, 0, 15), y: 643 },
+        { x: new Date(2017, 0, 16), y: 570 }
+      ]
+    },
+      {
+      type: "line",
+      showInLegend: true,
+      name: "Muertos",
+      lineDashType: "dash",
+      dataPoints: "",
+    } ]
+  });
+  chart.render();
+  
+  function toogleDataSeries(e){
+    if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+      e.dataSeries.visible = false;
+    } else{
+      e.dataSeries.visible = true;
+    }
+    chart.render();
+  }
+
+}

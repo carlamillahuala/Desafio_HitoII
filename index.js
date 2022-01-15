@@ -35,6 +35,6 @@ app.get("/covid19", (req, res) => {
   res.sendFile(path.join(__dirname + "/public/covid19/index.html"));
 });
 
-app.listen(3100, () => {
+app.listen(3000, () => {
   console.log(`Listening server in http://localhost:3000`);
 });
