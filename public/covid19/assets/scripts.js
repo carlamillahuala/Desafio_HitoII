@@ -7,6 +7,8 @@ init();
 async function init() {
   const token = localStorage.getItem("token");
   if (token) {
+    $("#cuerpo-tabla").empty();
+    $("#chartContainer").empty();
     ocultarLogin();
     let { masde10mil, paises } = await traerDatos(token);
     chart("chartContainer", "Países con más fallecidos Covid19", masde10mil);
@@ -218,32 +220,32 @@ $(document).on("click", ".mostrarPais", async (ev) => {
 //Esta función oculta el formulario de login y permite ser visibles al gráfico y tabla
 function ocultarLogin() {
   $("#div-form").removeClass("d-block").addClass("d-none");
-  $(".datos").removeClass("d-none").addClass("d-block");
+  $(".datos").removeClass("d-none");
   $("#navbar").removeClass("d-none");
 }
 
 //Esta función oculta el gráfico y tabla y muestra el login (Es para cuando el usuario cierra sesión)
 function mostrarLogin() {
   $("#div-form").removeClass("d-none").addClass("d-block");
-  $(".datos").removeClass("d-block").addClass("d-none");
+  $(".datos").addClass("d-none");
   $("#navbar").addClass("d-none");
 }
 
-function mostrarDatosChile () {
+function mostrarDatosChile() {
   $("#div-form").removeClass("d-block").addClass("d-none");
   $(".datos").removeClass("d-block").addClass("d-none");
   $(".seccionChile").removeClass("d-none");
-} 
+}
 
-function ocultarDatosChile () {
+function ocultarDatosChile() {
   $(".seccionChile").addClass("d-none");
-} 
+}
 
 //Función que elimina el token
 function logout() {
   localStorage.removeItem("token");
   mostrarLogin();
-  ocultarDatosChile()
+  ocultarDatosChile();
 }
 
 //Enlace del menú para cerrar sesión, llama a la función logout que se encarga de eliminar el token
@@ -251,7 +253,7 @@ $("#logout").on("click", function (ev) {
   logout();
 });
 
-async function datosChile (token){
+async function datosChile(token) {
   /*let data = await fetch(`/api/confirmed`, {
     method: "GET",
     headers: {
@@ -263,15 +265,16 @@ async function datosChile (token){
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  }
-  const url = ['/api/confirmed', '/api/deaths', '/api/recovered' ]
-  Promise.all(url.map(u => fetch(u, opciones)))
-  .then(response => Promise.all(response.map(resp => resp.json())))
-  .then(res => {
-    const datosChile = res.map(r => r.data)
-    graficoChile(datosChile)
-  })
-/*
+  };
+  const url = ["/api/confirmed", "/api/deaths", "/api/recovered"];
+  Promise.all(url.map((u) => fetch(u, opciones)))
+    .then((response) => Promise.all(response.map((resp) => resp.json())))
+    .then((res) => {
+      let datosChile = res.map((r) => r.data);
+      $("#graficoChile").empty();
+      graficoChile(datosChile);
+    });
+  /*
   const data1 = await fetch ('/api/confirmed')
   const data2 = await fetch ('/api/deaths')
   const data3 = await fetch ('/api/recovered')
@@ -284,104 +287,95 @@ async function datosChile (token){
 */
 }
 
-
-
-function graficoChile (array) {
-  console.log(array)
+function graficoChile(array) {
   var chart = new CanvasJS.Chart("graficoChile", {
     animationEnabled: true,
     theme: "light2",
-    title:{
-      text: "Situacion Chile"
+    title: {
+      text: "Situacion Chile",
     },
-    axisX:{
+    axisX: {
       valueFormatString: "DD MMM YYYY ",
       crosshair: {
         enabled: true,
-        snapToDataPoint: true
-      }
+        snapToDataPoint: true,
+      },
     },
     axisY: {
       title: "Number of Visits",
       includeZero: true,
       crosshair: {
-        enabled: true
-      }
+        enabled: true,
+      },
     },
-    toolTip:{
-      shared:true
-    },  
-    legend:{
-      cursor:"pointer",
+    toolTip: {
+      shared: true,
+    },
+    legend: {
+      cursor: "pointer",
       verticalAlign: "top",
-  
-  
-      itemclick: toogleDataSeries
+
+      itemclick: toogleDataSeries,
     },
-    data: [{
-      type: "line",
-      showInLegend: true,
-      name: "Confirmados",
-      markerType: "square",
-      xValueFormatString: "DD MMM, YYYY",
-      color: "#64b5f6" ,
-      dataPoints: array[0].map(confirmados => {
-        return {x: new Date(confirmados.date), y: confirmados.total
-            }
-        })
-    },
-    {
-      type: "line",
-      showInLegend: true,
-      name: "Muertos",
-      markerType: "square",
-      xValueFormatString: "DD MMM, YYYY",
-      dataPoints: array[1].map(muertes => {
-        return {x: new Date(muertes.date), y: muertes.total
-            }
-        })
-    },
+    data: [
       {
-      type: "line",
-      showInLegend: true,
-      name: "Recuperados",
-      markerType: "square",
-      xValueFormatString: "DD MMM, YYYY",
-      dataPoints: array[2].map(recuperados => {
-        return {x: new Date(recuperados.date), y: recuperados.total
-            }
+        type: "line",
+        showInLegend: true,
+        name: "Confirmados",
+        markerType: "square",
+        xValueFormatString: "DD MMM, YYYY",
+        color: "#64b5f6",
+        dataPoints: array[0].map((confirmados) => {
+          return { x: new Date(confirmados.date), y: confirmados.total };
         }),
-    } ]
+      },
+      {
+        type: "line",
+        showInLegend: true,
+        name: "Muertos",
+        markerType: "square",
+        xValueFormatString: "DD MMM, YYYY",
+        dataPoints: array[1].map((muertes) => {
+          return { x: new Date(muertes.date), y: muertes.total };
+        }),
+      },
+      {
+        type: "line",
+        showInLegend: true,
+        name: "Recuperados",
+        markerType: "square",
+        xValueFormatString: "DD MMM, YYYY",
+        dataPoints: array[2].map((recuperados) => {
+          return { x: new Date(recuperados.date), y: recuperados.total };
+        }),
+      },
+    ],
   });
   chart.render();
-  
-  function toogleDataSeries(e){
-    if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+
+  function toogleDataSeries(e) {
+    if (typeof e.dataSeries.visible === "undefined" || e.dataSeries.visible) {
       e.dataSeries.visible = false;
-    } else{
+    } else {
       e.dataSeries.visible = true;
     }
     chart.render();
   }
-
 }
 
-$("#chile").on("click", function (ev){
-  ev.preventDefault()
+$("#chile").on("click", function (ev) {
+  ev.preventDefault();
+  $("#chile").addClass("active");
+  $("#home").removeClass("active");
   const token = localStorage.getItem("token");
   if (token) {
-  mostrarDatosChile() 
-  datosChile(token)
-}
-})
+    mostrarDatosChile();
+    datosChile(token);
+  }
+});
 
-$("#home").on("click", function (ev){
-  init()
-})
-
-
-
-
-
-
-
+$("#home").on("click", function (ev) {
+  $("#chile").removeClass("active");
+  $("#home").addClass("active");
+  init();
+});
