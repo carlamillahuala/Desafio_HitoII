@@ -11,7 +11,6 @@ async function init() {
     let { masde10mil, paises } = await traerDatos(token);
     chart("chartContainer", "Países con más fallecidos Covid19", masde10mil);
     crearTabla(paises);
-    datosChile(token)
   }
 }
 
@@ -230,10 +229,21 @@ function mostrarLogin() {
   $("#navbar").addClass("d-none");
 }
 
+function mostrarDatosChile () {
+  $("#div-form").removeClass("d-block").addClass("d-none");
+  $(".datos").removeClass("d-block").addClass("d-none");
+  $(".seccionChile").removeClass("d-none");
+} 
+
+function ocultarDatosChile () {
+  $(".seccionChile").addClass("d-none");
+} 
+
 //Función que elimina el token
 function logout() {
   localStorage.removeItem("token");
   mostrarLogin();
+  ocultarDatosChile()
 }
 
 //Enlace del menú para cerrar sesión, llama a la función logout que se encarga de eliminar el token
@@ -278,7 +288,7 @@ async function datosChile (token){
 
 function graficoChile (array) {
   console.log(array)
-  var chart = new CanvasJS.Chart("chartContainer", {
+  var chart = new CanvasJS.Chart("graficoChile", {
     animationEnabled: true,
     theme: "light2",
     title:{
@@ -314,39 +324,33 @@ function graficoChile (array) {
       name: "Confirmados",
       markerType: "square",
       xValueFormatString: "DD MMM, YYYY",
-      color: "#00000",
+      color: "#64b5f6" ,
       dataPoints: array[0].map(confirmados => {
-        x: new Date(confirmados.date), y: confirmados.total
-      })
+        return {x: new Date(confirmados.date), y: confirmados.total
+            }
+        })
     },
     {
       type: "line",
       showInLegend: true,
       name: "Muertos",
-      lineDashType: "dash",
-      dataPoints: [
-        { x: new Date(2017, 0, 3), y: 510 },
-        { x: new Date(2017, 0, 4), y: 560 },
-        { x: new Date(2017, 0, 5), y: 540 },
-        { x: new Date(2017, 0, 6), y: 558 },
-        { x: new Date(2017, 0, 7), y: 544 },
-        { x: new Date(2017, 0, 8), y: 693 },
-        { x: new Date(2017, 0, 9), y: 657 },
-        { x: new Date(2017, 0, 10), y: 663 },
-        { x: new Date(2017, 0, 11), y: 639 },
-        { x: new Date(2017, 0, 12), y: 673 },
-        { x: new Date(2017, 0, 13), y: 660 },
-        { x: new Date(2017, 0, 14), y: 562 },
-        { x: new Date(2017, 0, 15), y: 643 },
-        { x: new Date(2017, 0, 16), y: 570 }
-      ]
+      markerType: "square",
+      xValueFormatString: "DD MMM, YYYY",
+      dataPoints: array[1].map(muertes => {
+        return {x: new Date(muertes.date), y: muertes.total
+            }
+        })
     },
       {
       type: "line",
       showInLegend: true,
-      name: "Muertos",
-      lineDashType: "dash",
-      dataPoints: "",
+      name: "Recuperados",
+      markerType: "square",
+      xValueFormatString: "DD MMM, YYYY",
+      dataPoints: array[2].map(recuperados => {
+        return {x: new Date(recuperados.date), y: recuperados.total
+            }
+        }),
     } ]
   });
   chart.render();
@@ -361,3 +365,23 @@ function graficoChile (array) {
   }
 
 }
+
+$("#chile").on("click", function (ev){
+  ev.preventDefault()
+  const token = localStorage.getItem("token");
+  if (token) {
+  mostrarDatosChile() 
+  datosChile(token)
+}
+})
+
+$("#home").on("click", function (ev){
+  init()
+})
+
+
+
+
+
+
+
