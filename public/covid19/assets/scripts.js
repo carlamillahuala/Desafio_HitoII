@@ -230,13 +230,14 @@ function mostrarLogin() {
   $(".datos").addClass("d-none");
   $("#navbar").addClass("d-none");
 }
-
+//Oculta el login, oculta la situación mundial y muestra solo el gráfico de Chile
 function mostrarDatosChile() {
   $("#div-form").removeClass("d-block").addClass("d-none");
   $(".datos").removeClass("d-block").addClass("d-none");
   $(".seccionChile").removeClass("d-none");
 }
 
+//Solo oculta el gráfico de Chile
 function ocultarDatosChile() {
   $(".seccionChile").addClass("d-none");
 }
@@ -253,6 +254,7 @@ $("#logout").on("click", function (ev) {
   logout();
 });
 
+//Hace 3 fetch con promise.all y llama a generar el gráfico de Chile
 async function datosChile(token) {
   /*let data = await fetch(`/api/confirmed`, {
     method: "GET",
@@ -287,6 +289,7 @@ async function datosChile(token) {
 */
 }
 
+//Función para crear gráfico de Chile, le pasamos un array de 3 array
 function graficoChile(array) {
   var chart = new CanvasJS.Chart("graficoChile", {
     animationEnabled: true,
@@ -363,6 +366,9 @@ function graficoChile(array) {
   }
 }
 
+//Cuando se le hace click en el navbar a "Situación Chile"
+//ocultar datos mundiales y login
+//Pasa la clase active de Bootstrap a "Situación Chile"
 $("#chile").on("click", function (ev) {
   ev.preventDefault();
   $("#chile").addClass("active");
@@ -374,6 +380,8 @@ $("#chile").on("click", function (ev) {
   }
 });
 
+//Si hace click en home, vuelve a ejecutarse función init
+//Pasa la clase active de Bootstrap a "home"
 $("#home").on("click", function (ev) {
   $("#chile").removeClass("active");
   $("#home").addClass("active");
